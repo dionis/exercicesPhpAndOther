@@ -6,6 +6,7 @@
 
 * El directorio ConceptExcercise se encuentra la respuesta del ejercicio que aparece en el documento EXERCICES/Ejercicios Teoricos.pdf
 
+
 ### Para desplegar:
 Para ver la respuesta a los ejercicios (EXERCICES/Ejercicios Reclutamiento.pdf) debe instalar un servidor de aplicaciones
 wamp, xamp u otro que realice las mismas funciones y colocar este proyecto (contenido del directorio ExercicesPhpAndOther) en la dirección definida por el servidor de aplicaciones (p.ej: para wamp es el directorio www).
