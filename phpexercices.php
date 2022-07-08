@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="index.css">
+</head>
+<body>
+
 
 <?php 
 include 'group.php';
@@ -7,28 +14,6 @@ include 'group.php';
 
 // PHP program for implementation 
 // of Bubble Sort
-function bubbleSort(&$arr)
-{
-    $n = sizeof($arr);
-  
-    // Traverse through all array elements
-    for($i = 0; $i < $n; $i++) 
-    {
-        // Last i elements are already in place
-        for ($j = 0; $j < $n - $i - 1; $j++) 
-        {
-            // traverse the array from 0 to n-i-1
-            // Swap if the element found is greater
-            // than the next element
-            if ($arr[$j] > $arr[$j+1])
-            {
-                $t = $arr[$j];
-                $arr[$j] = $arr[$j+1];
-                $arr[$j+1] = $t;
-            }
-        }
-    }
-}
 
 // PHP program for implementation 
 // of selection sort 
@@ -85,21 +70,24 @@ function selection_sortCSV(&$arr, $n, $column)
 function exercise1(){       
 
 
-    echo "<h2>Ejercicio 1 (obligatorio)</h2>";
+    echo "<h2><strong id=\"php_question\">Ejercicio 1 </strong> <b id=\"question_type\">(obligatorio)</b></h2>";
     echo "<p>Se quiere implementar un método sort_csv(\$csv, \$column) en PHP que ordene un string
     que representa un CSV que reciba como parámetro. El método además recibirá el número de
     la columna por la cual se quiere ordenar. La columna cero es la primera de todas. El método
     retorna un string. Por ejemplo, data la variable:
     
-    \$data = \"paco,2,3.6\nperico,5,1.7\npirolo,1.3,2.6\npocholo,11,-1.5\";
+    \$data = \"paco,2,3.6\\nperico,5,1.7\\npirolo,1.3,2.6\\npocholo,11,-1.5\";
     </p>";
 
 
+    echo "</br><p> <b>Nota:</b> Si usted no inserta una cadena CSV como la del ejemplo, pero si el número de la columna se asume
+       por defecto como CSV: \"paco,2,3.6\\nperico,5,1.7\\npirolo,1.3,2.6\\npocholo,11,-1.5\"</p>";
+
     echo "<br/>";
 
-    echo "<form method='post' action='index.php'>
+    echo "<form method='post' action='phpexercices.php?ejercicio=PhpEjecicio1'>
     <p>
-     <label for='x1'>Inserte texto en formato CSV: </label>
+     <label for='x1'>Inserte texto en formato CSV (Siga el ejemplo): </label>
      <input type=\"text\"  id='x1' name=\"x1\">     
     </p> 
 
@@ -127,58 +115,98 @@ function exercise1(){
     $CsvString = "paco,2,3.6\nperico,5,1.7\npirolo,1.3,2.6\npocholo,11,-1.5";
 
     if (isset($_POST["x1"]) && isset($_POST["c1"])) {
-        echo "El valor de x1 es de ".$_POST["x1"];
-        echo "El valor de c1 es de ".$_POST["c1"];
+        // echo "El valor de x1 es de ".$_POST["x1"];
+        // echo "El valor de c1 es de ".$_POST["c1"];
 
         $CsvString = $_POST["x1"];
         $column = 2;
-        $colum = $_POST["c1"];
+        $column = $_POST["c1"];
 
-        if (is_numeric($colum) == false) {
-           $message =   "<h5>El parámetro para ordenar por columna no es un número</h5>";
+        if (is_numeric($column) == false) {
+           $message =   "<h3>El parámetro para ordenar por columna no es un número</h3>";
            echo $message;
-           throw new Exception($message);
+
+           return;
+           //throw new Exception($message);
         }
+  
+   
+        $column = (int) $column;
+
+        if ($column == 0){
+            $message =   "<h3>Ordenar por la columna de valor 0 no es válido</h3>";
+            echo $message;
+ 
+            return;
+
+        }
+
+        if ( $CsvString == "")
+          $CsvString = "paco,2,3.6\\nperico,5,1.7\\npirolo,1.3,2.6\\npocholo,11,-1.5";    
+
+        $Data = str_getcsv($CsvString, "\n"); //parse the rows
+        $csv = array_map('str_getcsv', explode("\\n", $CsvString));
+
+        
+        //echo " CSV processing !!!!\n";
+        $csv_len_row = count($csv);
+        
+        if ($csv_len_row <= 0) {
+          
+            $message = "<h3>No existe una cadena CSV para ordenar.</h3>";
+            echo $message;
+            return;
+        }
+        else {   
+            //echo "\nLength of rows: ".$csv_len_row;
+            $csv_len_column = count($csv[0]);
+            if (  $csv_len_column <= 0){
+               
+                $message =   "<h3>No existe una cadena CSV para ordenar.</h3>";
+                echo $message;
+     
+                return;
+            }
+            else {
+                if (is_numeric($column) == false || $column <= 0 || $column > $csv_len_column) {
+                    $message =   "<h3>El parámetro del número de la columna es incorrecto.</h3>";
+                    echo $message;
+         
+                    return;
+                }
+                else {
+                    //echo "\n\nLength of columns: ".$csv_len_column;
+    
+                    selection_sortCSV($csv,$csv_len_row, $column);
+                    $elements = $csv;
+                    $elementSize = count($elements);
+                    echo "<h5>Resultado: </h5>";
+                    for ($i = 0; $i < $elementSize; $i++){
+                        $message = "";
+                        $jelement = count($elements[$i]);
+                        for ($j = 0; $j < $jelement; $j++){
+                            $message .=  (string)$elements[$i][$j];
+                            $message .= ($jelement-1 != $j)? ",":";";
+                        }
+                        echo "<h4>".$message. "</h4>";
+                    }             
+                   
+                }
+    
+            }     
+       }
 
         
       }
     
-    $CsvString = "paco,2,3.6\nperico,5,1.7\npirolo,1.3,2.6\npocholo,11,-1.5";
 
-    $Data = str_getcsv($CsvString, "\n"); //parse the rows
-    $csv = array_map('str_getcsv', explode("\n", $CsvString));
-    //echo " CSV processing !!!!\n";
-    $csv_len_row = count($csv);
-    
-    if ($csv_len_row <= 0) {
-        throw new Exception("Not exits elements in CSV String for sorting.\n");
-    }
-    else {   
-        //echo "\nLength of rows: ".$csv_len_row;
-        $csv_len_column = count($csv[0]);
-        if (  $csv_len_column <= 0){
-            throw new Exception( "Not exits elements in CSV String for sorting.\n");
-        }
-        else {
-            if (is_numeric($column) == false || $column <= 0 || $column > $csv_len_column) {
-                throw new Exception("The column parameter order is incorrect");
-            }
-            else {
-                //echo "\n\nLength of columns: ".$csv_len_column;
-
-                selection_sortCSV($csv,$csv_len_row, $column);
-                //var_dump($csv);
-            }
-
-        }     
-   }
  }
 
 
 
 function exercixesPhp2() {
 
-    echo "<h2>Ejercicio 2 (obligatorio)</h2>";
+    echo "<h2><strong id=\"php_question\">Ejercicio 2  </strong> <b id=\"question_type\">(obligatorio)</b></h2>";
 
     echo "<p>    Para el mundial de Fútbol se quiere crear una clase para controlar la fase clasificatoria por
     grupos. Se quiere crear la clase Group de forma tal que permita lo siguiente:</p>";
@@ -196,10 +224,41 @@ function exercixesPhp2() {
         equipos ordenados por clasificación hacia la próxima ronda. El método debe devolver
         en todo momento la tabla de posiciones actual, incluso aunque no se hayan jugado
         todos los partidos.</li>
-        <li>Debe utilizarse la siguiente forma de calcular los puntos y determinar el desempate.</li>
+        <li>Debe utilizarse la siguiente forma de calcular los puntos y determinar el desempate.
+
+            <ul>Formas de ganar puntos
+               <ul>
+                    <li>i. Ganar un partido 3 puntos para el ganador</li>
+                    <li>ii. Perder un partido 0 puntos para el perdedor</li>
+                    <li>iii. Empatar un partido 1 punto para cada equipo.<li>
+               </ul> 
+               <ul> b. Formas de desempatar
+                    <li>i. Mayor cantidad de puntos</li>
+                    <li>ii. Mayor diferencia de goles</li>
+                    <li>iii. Mayor números de goles a favor</li>
+                </ul>
+                <ul>c. Si 2 o más equipos quedan empatados según los criterios anteriores entonces
+                    <li>i. Mayor número de puntos obtenidos en los partidos entre ellos</li>
+                    <li>ii. Mayor diferencia de goles en los partidos entre ellos</li>
+                    <li>iii. Número de goles anotados en los partidos entre ellos</li>
+                </ul>
+             </ul>   
+           </li>
     </ul>";
 
+    echo "<p> Se usó la corrida de ejemplo: 
+     (del grupo H del mundial de Fútbol de 2018):
+            <p>\$groupA = new Group('Colombia', 'Japón', 'Senegal', 'Polonia');</p>
+            <p>\$groupA.match('Senegal', 0, 'Colombia', 1);</p>
+            <p>\$groupA.match('Japón', 0, 'Polonia', 1);</p>
+            <p>\$groupA.match('Senegal', 2, 'Japón', 2);</p>
+            <p>\$groupA.match('Polonia', 0, 'Colombia', 3);<p>
+            <p>\$groupA.match('Polonia', 1, 'Senegal', 2);</p>
+            <p>\$groupA.match('Colombia', 1, 'Japón', 3);</p>
+            <p>\$result = \$groupA.result();</p>
+        </p>";
 
+    echo "<p><b>Nota:</b> Ver código en archivo <b>group.php</b> y <b>phpexercices.php</b> para comprobar implementación</p>";  
     $groupA = new Group('Colombia', 'Japón', 'Senegal', 'Polonia');
 
     $groupA->matchEx("Senegal", 0, 'Colombia', 1);
@@ -210,6 +269,9 @@ function exercixesPhp2() {
     $groupA->matchEx('Colombia', 1, 'Japón', 3);
 
     $result = $groupA->result();
+    $strResult = implode(", ", $result);
+    echo "<h4>".$strResult."</h4>";
+    
 
 }
 
@@ -245,3 +307,6 @@ if ($request != "" && $request != null)
 }
 
 ?>
+
+</body>
+</html>

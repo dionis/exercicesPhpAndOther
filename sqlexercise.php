@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="index.css">
+</head>
+<body>
+
 
 <?php
 
@@ -33,10 +40,10 @@ function headerQuestion(){
     </h4>";
 
 }
-function sqlExerciseOne(){
+function sqlExerciseTwo(){
      headerQuestion();
      echo "</br>";
-     echo "<h1>Ejercicio 1 (obligatorio)
+     echo "<h1><strong id=\"question\"> Ejercicio 2 </strong> <b id=\"question_type\">(obligatorio)</b>
      </h1>";
      echo "Crea una consulta SQL que devuelva el listado de personas con la cantidad de libros de las
      que es dueño, este listado debe aparecer ordenado de mayor a menor. Las personas que no
@@ -45,7 +52,7 @@ function sqlExerciseOne(){
      debe ser algo como:";
      echo "<h5>
      <table>
-     <tr><td> title </td><td>owner_age</td><td>author_age</td></tr>
+     <tr><td > title </td><td><b>owner_age</td><td>author_age</td></tr>
      <tr><td> papa goriot </td><td style=\"text-align:center\">15</td><td style=\"text-align:center\">50</td></tr>
      <tr><td> don quijote  </td><td style=\"text-align:center\">18</td><td style=\"text-align:center\">34</td></tr>
      <tr><td> la iliada </td><td style=\"text-align:center\">18</td><td style=\"text-align:center\">34</td></tr>     
@@ -62,10 +69,10 @@ function sqlExerciseOne(){
 }
 
 
-function sqlExerciseTwo(){
+function sqlExerciseOne(){
     headerQuestion();
     echo "</br>";
-    echo "<h1>Ejercicio 2 (obligatorio)
+    echo "<h1><strong id=\"question\">Ejercicio 1 </strong> <b id=\"question_type\">(obligatorio)</b>
     </h1>";
     echo "<p>Crea una consulta SQL que devuelva el listado de personas con la cantidad de libros de las
     que es dueño, este listado debe aparecer ordenado de mayor a menor. Las personas que no
@@ -97,7 +104,7 @@ function sqlExerciseTwo(){
 function sqlExerciseThree(){
     headerQuestion();
     echo "</br>";
-    echo "<h1>Ejercicio 3 (obligatorio)
+    echo "<h1> <strong id=\"question\"> Ejercicio 3 </strong> <b id=\"question_type\">(obligatorio)</b>
     </h1>";
     echo "<p>Crea una consulta SQL que devuelva el listado de personas <span>que han escrito más libros que
     la cantidad que poseen</span>. O sea cada persona puede haber escrito N libros y ser dueña de M
@@ -105,18 +112,24 @@ function sqlExerciseThree(){
     </p>";
 
     echo "<h5>
-    <table>
-    <tr><td> name </td></tr>
-    <tr><td> paco </td></tr>
-    <tr><td> perico </td></tr>  
-    <tr><td> pirolo </td></tr>
+    <table> 
+     <thead>
+    <tr>
+    <tr><th>name</th></tr>
+    </tr>
+    </thead>
+    <tbody>   
+        <tr><td> paco </td></tr>
+        <tr><td> perico </td></tr>  
+        <tr><td> pirolo </td></tr>
+    </tbody>
     </table>
     </h5>";
 
     echo "</br> 
        <h2>Respuesta:</h2>
        <h3>
-       select e.name as 'name' from people as e INNER JOIN books b ON e.id = b.owner_id INNER JOIN people e1 ON e1.id = b.author_id GROUP BY b.owner_id, b.author_id HAVING COUNT(b.owner_id ) < COUNT(b.author_id); 
+       select A.name as 'name' from (select e.name as 'name',count(b.owner_id) as 'amount', e.id as 'id' from people as e INNER JOIN books b ON e.id = b.owner_id group by b.owner_id ) as A INNER JOIN (select e.name as 'name',count(b.author_id) as 'amount_author', e.id as 'id' from people as e INNER JOIN books b ON e.id = b.author_id group by b.author_id) as B on B.id = A.id where A.amount <= B.amount_author; 
        </h3>";
 
 }
@@ -141,7 +154,7 @@ function sqlExerciseFour(){
 
     echo "<h5>
     <table>
-    <tr><td> name </td></tr>
+    <tr><td> <b>name </b></td></tr>
     <tr><td> paco </td></tr>
     <tr><td> perico </td></tr>  
     <tr><td> pirolo </td></tr>
@@ -179,3 +192,6 @@ $request=isset($_GET['ejercicio'])?$_GET['ejercicio']:"";
       //exercise1();
     }
 ?>
+
+</body>
+</html>

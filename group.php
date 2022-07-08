@@ -55,33 +55,57 @@
     function selection_sort( $score_matrix_result) 
     {
         $nsize = count($this->groupMembers);
-        foreach( $score_matrix_result as $memberi =>$iRow)
+        $new_array = array();
+
+        foreach( $score_matrix_result as $memberi =>$iRow){
+          $new_array[] = $iRow;
+        }
+
+        $nsize = count($new_array);
+        for ( $i = 0; $i < $nsize; $i++)
         {
-            $low = $memberi;
+            $low = $i;
            
-            foreach( $score_matrix_result as $memberJ =>$jRow)
+            for( $j = $i; $j < $nsize; $j++)
             {
-              if ($memberJ != $memberi){
+              if ($j != $i){
    
-                if ( $score_matrix_result[ $memberJ]["Puntos"] <  $score_matrix_result[$low]["Puntos"])
+                if ( $new_array[ $j]["Puntos"] > $new_array[$low]["Puntos"])
                 {
-                    $low =  $memberJ;
+                    $low =  $j;
                     //print_r("Excuteee ==> ");
                 }
-                else if  ( $score_matrix_result[ $memberJ]["Puntos"] ==  $score_matrix_result[$low]["Puntos"]){
+                else if  ( $new_array[ $j]["Puntos"] ==  $new_array[$low]["Puntos"]){
 
                         //echo "Desempate!!!!!";
 
                         //   b. Formas de desempatar
                         //     i. Mayor cantidad de puntos
                         //     ii. Mayor diferencia de goles
-                        //     iii. Mayor números de goles a favor
-                        //   c. Si 2 o más equipos quedan empatados según los criterios anteriores entonces
-                        //     i. Mayor número de puntos obtenidos en los partidos entre ellos
-                        //     ii. Mayor diferencia de goles en los partidos entre ellos
-                        //     iii. Número de goles anotados en los partidos entre ellos
-                        //   Nota: en el caso c) cuando se dice "los partidos entre ellos" se refiere a los partidos entre todos
-                        //   los empatados (que pueden ser 2, 3 o 4).
+                        if ( $new_array[ $j]["Diferencia"] >  $new_array[$low]["Diferencia"]){
+
+                          $low =  $j;
+                        }
+                        else if ( $new_array[ $j]["Diferencia"] == $new_array[$low]["Diferencia"]){
+                                //     iii. Mayor números de goles a favor
+                                if ( $new_array[ $j]["A Favor"] >  $new_array[$low]["A Favor"]){
+
+                                  $low =  $j;
+                                }
+                                else if ( $new_array[ $j]["A Favor"] == $new_array[$low]["A Favor"]){
+                                           //   c. Si 2 o más equipos quedan empatados según los criterios anteriores entonces
+                                            //     i. Mayor número de puntos obtenidos en los partidos entre ellos
+                                            //     ii. Mayor diferencia de goles en los partidos entre ellos
+                                            //     iii. Número de goles anotados en los partidos entre ellos
+                                            //   Nota: en el caso c) cuando se dice "los partidos entre ellos" se refiere a los partidos entre todos
+                                            //   los empatados (que pueden ser 2, 3 o 4).
+                                        
+        
+                                }
+
+                        }
+                  
+                   
 
                 }
 
@@ -90,18 +114,20 @@
             }
               
             // swap the minimum value to $ith node
-            if ($memberi != $low){
-              if (  $score_matrix_result[ $memberi]["Puntos"]>   $score_matrix_result[ $low]["Puntos"])
-              {
-                  $tmp = $score_matrix_result[ $memberi];
-                  $score_matrix_result[ $memberi] =  $score_matrix_result[ $low];
-                  $score_matrix_result[$low] = $tmp;
-              }
+            if ($i != $low){
+              if (  $new_array[ $i]["Puntos"] <   $new_array[ $low]["Puntos"])
+               {
+                  $tmp = $new_array[ $i];
+                  $new_array[ $i] =  $new_array[ $low];
+                  $new_array[$low] = $tmp;
+               }
 
             }
 
         
         }
+
+        return $new_array;
     }
 
     public function result(){
@@ -115,7 +141,7 @@
       $counter = 0;
       foreach( $this->groupMatches as $team1 => $matches){
           $score_matrix[$team1] = $counter;
-          $score_matrix_result[$team1] = array( "Ganados"=>0, "Empates"=>0, "Perdidos"=>0, "A Favor"=>0, "En Contra"=>0, "Diferencia"=>0, "Puntos"=>0);
+          $score_matrix_result[$team1] = array("Equipo"=>$team1, "Ganados"=>0, "Empates"=>0, "Perdidos"=>0, "A Favor"=>0, "En Contra"=>0, "Diferencia"=>0, "Puntos"=>0);
           $counter += 1;
       }
 
@@ -129,7 +155,6 @@
           if ($scoreTeam1 > $scoreTeam2){
             $score_matrix_result[$team1]["Ganados"] += 1;
             $score_matrix_result[$team2]["Perdidos"] += 1;
-
             $score_matrix_result[$team1]["Puntos"] += 3;
         
           }
@@ -138,11 +163,12 @@
             $score_matrix_result[$team2]["Empates"] += 1;
 
             $score_matrix_result[$team1]["Puntos"] += 1;
-            $score_matrix_result[$team1]["Puntos"] += 1;
+            $score_matrix_result[$team2]["Puntos"] += 1;
           }
           else {
             $score_matrix_result[$team1]["Perdidos"] += 1;
             $score_matrix_result[$team2]["Ganados"] += 1;
+            $score_matrix_result[$team2]["Puntos"] += 3;
           }
 
           $score_matrix_result[$team1]["Diferencia"] +=$scoreTeam1 - $scoreTeam2;
@@ -162,26 +188,28 @@
       //     i. Ganar un partido 3 puntos para el ganador
       //     ii. Perder un partido 0 puntos para el perdedor
       //     iii. Empatar un partido 1 punto para cada equipo.
-      $this->selection_sort( $score_matrix_result);
+      $score_result_sort =$this->selection_sort( $score_matrix_result);
 
       $rowHeader = array("Equipo"=>0, "Ganados"=>1,"Empates"=>2,"Perdidos"=>3,"A Favor"=>4,"En Contra"=>5,"Diferencia"=>6,"Puntos"=>7);
+      echo "<br/>";
+      echo "<h3>Resultados:</h3>";
+      echo "<br/>";
       echo "<table>";
       echo "<tr>";
       foreach($rowHeader as $row2 => $topic){
           echo "<td>" . $row2 . "</td>";
       }
       echo "</tr>";
-      $nsize = count($this->groupMatches);
-      $columnSize = count($rowHeader);
-    
-      foreach($score_matrix_result as $key=>$row) {
+     
+      $finalResult = array();
+      foreach($score_result_sort as $row) {
           echo "<tr>";
-          $rowString = array();         
-
-          echo "<td>" .  $key . "</td>";
+          $rowString = array();       
           foreach($row as $key2=>$row2){
               //echo "<td>" . $row2 . "</td>";
               $rowString[$rowHeader[$key2]] = "<td style=\"text-align:center\">" . $row2 . "</td>";
+              if ($key2 == 'Equipo')
+                $finalResult[] =  $row2;
           }
 
           $endRow = "";
@@ -192,10 +220,12 @@
           echo $endRow;
           echo "</tr>";
       }
+      
       echo "</table>";
+      return $finalResult;
     }
 
-
+    
 
   }
 ?>

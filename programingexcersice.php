@@ -1,23 +1,34 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="index.css">
+</head>
+<body>
 
 
 <?php 
   
   function excersiceOne($number_array){
 
-
-      echo "<h1>Ejercicio 1 (obligatorio)</h1>";
+      $number_array = [1, 2, 10, 3, 4, 9, 5, 6, 8, 7, 8, 9, 10];
+      echo "<h1><strong id=\"optional\">Ejercicio 1 </strong> <b id=\"question_type\">(obligatorio)</b></h1>";
       echo "<p> Se tiene un array de números enteros que puede contener elementos repetidos. Y se quiere
       obtener un nuevo array son los elementos del primer array, pero sin repeticiones. El array
-      resultante debe tener el mismo orden que el anterior. En caso de haber elementos repetidos,
-      en el array resultante sólo debe aparecer la última ocurrencia de ese elemento en el array
+      resultante debe tener <b>el mismo orden</b> que el anterior. En caso de haber elementos repetidos,
+      en el array resultante <b>sólo debe aparecer la última ocurrencia</b> de ese elemento en el array
       original.
+
+     <p><b>Ejemplo:</b>
+        <p>Entrada: [1, 2, 10, 3, 4, 9, 5, 6, 8, 7, 8, 9, 10]</p>
+        <p>Salida: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</p>
+     <p>
       </p>";
 
 
       echo "<br/>";
 
-      echo "<form method='post' action='#'>
+      echo "<form method='post' action='programingexcersice.php?ejercicio=OtherEjecicio1'>
        <p>
         <label for='x1'>Inserte el arreglo de números (separados por comas): </label>
         <input type=\"text\"  id='x1' name=\"x1\">     
@@ -28,6 +39,25 @@
         <p><input type=\"submit\" /></p>
       </form>";
 
+      if (isset($_POST["x1"])) {
+         //Transform input array with as string
+         $array_input = explode(",", $_POST["x1"]);
+         $ex_array = array();
+         foreach($array_input as $value){
+           if (is_numeric($value) == false) {
+              echo "<h4> Hay elementos en el arraglo que no son números</h4>";
+              return;
+           }     
+           else {
+            $number = (float)$value;
+            $ex_array[] =  is_float($number)? $number:(int)$value;
+           }      
+         }
+
+         $number_array =  $ex_array;
+
+
+      }
 
       if (is_array($number_array) == false || count($number_array) == 0)
            throw new Exception("Is not a number array");
@@ -40,13 +70,26 @@
 
       for ( $i=0; $i < $array_size; $i++){
         $pos = $i;
-        for ($j = 0; $j <  $array_size; $j++ ){
-            if ($i != $j && $number_array[$i] == $number_array[$j])
+        $value = $number_array[$i];
+        for ($j = 1; $j <  $array_size; $j++ ){
+            if ($i != $j &&  $value == $number_array[$j]){
                $pos = $j;  
+               $number_array[$i] = "X";
+            }          
         }
-            $new_array[] = $number_array[$pos];
+        $number_array[$pos] = $value;
       }
-
+    
+      foreach ($number_array as $value){
+         if ($value != "X") {
+          $new_array[] = $value;
+         }  
+      }
+      echo "<h4> Arreglo final: ";
+      foreach ($new_array as $value){
+        echo $value. " ";
+      }
+      echo "</h4>";
       return $new_array;        
   }
 
@@ -78,13 +121,17 @@
   function next_periodic($number_prmt){
      do {
         $number_prmt +=1;
+        $binaryRpr = decbin($number_prmt);
      }
-     while (ifStringNewsPaper( decbin($number_prmt)) == false);       
+     while (ifStringNewsPaper($binaryRpr ) == false);  
+     echo "<h5> La representación binaria de ".$number_prmt." es ".$binaryRpr." </h5>";    
     return $number_prmt;
   }
 
   function excersiceTwo($number_prmt){
-     echo "<h1>Ejercicio 2 (obligatorio)</h1>";
+
+    
+     echo "<h1><strong id=\"optional\">Ejercicio 2 </strong> <b id=\"question_type\">(obligatorio)</b></h1>";
      echo "<p>Dadas las siguientes definiciones.
      <ul>
       <li>Un string es periódico si está compuesto por la repetición de un substring. Por ejemplo
@@ -104,12 +151,14 @@
      </ul>
      Se quiere implementar una función (en el lenguaje de tu preferencia) que reciba como
      parámetro un número entero. Y devuelva el menor número periódico mayor que el que es
-     recibido como parámetro.    
+     recibido como parámetro.
+
+     <p><b>Nota:</b> En caso de no insertar ningún número se toma el 250 como ejemplo</p>    
      </p>";
 
      echo "<br/>";
 
-     echo "<form method='post' action='#'>
+     echo "<form method='post' action='programingexcersice.php?ejercicio=OtherEjecicio2'>
       <p>
        <label for='x1'>Inserte el número: </label>
        <input type=\"text\"  id='x1' name=\"x1\">     
@@ -120,8 +169,20 @@
        <p><input type=\"submit\" /></p>
      </form>";
 
+     if (isset($_POST["x1"])) {
+           $number = $_POST["x1"];
+           if (is_numeric($number) == false) {
+            echo "<h4>El parámetro no es un número</h4>";  
+            return;  
+          }
+          $number = (float)$number;
+          $number_prmt =  is_float($number)?$number:(int)$number;
+
+     }
+
     if (is_numeric($number_prmt) == false) {
-        throw new Exception("Paramert is not a number");    
+       echo "<h4>El parámetro no es un número</h4>";  
+       return;  
     }
     else {
        $nex_number = next_periodic($number_prmt);
@@ -131,7 +192,7 @@
 
   function excersiceThree($x1, $y1, $x2,$y2, $x3,$y3,$x4,$y4) {
 
-       echo "<h1>Ejercicio 3 (obligatorio)</h1>";
+       echo "<h1><strong id=\"optional\">Ejercicio 3 </strong> <b id=\"question_type\">(obligatorio)</b></h1>";
        echo "<p>
        Implemente una función (en el lenguaje de su preferencia) que reciba como parámetro 8
        números enteros: x1, y1, x2, y2, x3 y3, x4, y4.
@@ -150,7 +211,7 @@
       
        echo "<br/>";
 
-       echo "<form method='post' action='#'>
+       echo "<form method='post' action='programingexcersice.php?ejercicio=OtherEjecicio3'>
         <p>
          <label for='x1'>x1: </label>
          <input type=\"text\"  id='x1' name=\"x1\">
@@ -184,15 +245,32 @@
          <p><input type=\"submit\" /></p>
        </form>";
 
-      if (isset($_POST["x1"])) {
-        echo "El valor de x1 es de ".$_POST["x1"];
+      if (!isset($_POST["x1"]) || !isset($_POST["x2"]) || !isset($_POST["x3"]) || !isset($_POST["x4"]) ||
+           !isset($_POST["y1"]) || !isset($_POST["y2"]) || !isset($_POST["y3"]) || !isset($_POST["y4"])) {
+             echo "<h4> No se ha insertado uno de los valores de las coordenadas y se asume el ejemplo por defecto
+             (0, 20), (30, 0), (10, 10), (30, 20)
+             </h4>";
         
+      }
+      else {
+           $x1 = (int) $_POST["x1"];
+           $y1 = (int) $_POST["y1"];
+
+           $x2 = (int) $_POST["x2"];
+           $y2 = (int) $_POST["y2"];
+
+           $x3 = (int) $_POST["x3"];
+           $y3 = (int) $_POST["y3"];
+
+           $x4 = (int) $_POST["x4"];
+           $y4 = (int) $_POST["y4"];
+
       }
 
        if (is_numeric($x1) == false || is_numeric($y1) == false || is_numeric($x2) == false || is_numeric($y2) == false 
             || is_numeric($x3) == false || is_numeric($y3) == false|| is_numeric($x4) == false || is_numeric($y4) == false) {
 
-              throw new Exception("Paramert incorrect");    
+              echo "<h4>Una de las coordenadas es incorrecta</h4>";    
        }
        else {
         //Si tienes cuatro coordenadas - ((X,Y),(A,B)) y ((X1,Y1),(A1,B1)) - en lugar de dos más ancho y alto, se vería así:
@@ -289,9 +367,200 @@
 
         excersiceThree(0, 20, 30, 0, 10, 10, 30, 20);
         break;
+    case "OtherEjecicio4":
+          //0, 20, 20, 0, 10, 30, 30, 10
+          //0, 0, 30, 30, 10, 10, 20, 20 
+          //0, 20, 30, 0, 10, 10, 30, 20 
+          //excersiceThree($x1, $y1, $x2,$y2, $x3,$y3,$x4,$y4);
+  
+          excerciseFour();
+          break;
     case "":            
     default:
       //exercise1();
     }
 
+
+    ///All String permutation 
+    //Bibliografy: https://www.geeksforgeeks.org/php-program-for-write-a-program-to-print-all-permutations-of-a-given-string/
+
+
+    // PHP program to print all 
+    // permutations of a given string. 
+  
+/* Permutation function @param 
+   str string to calculate permutation 
+   for @param l starting index @param 
+   r end index */
+function permute(&$arrayStr,$str, $l, $r) 
+{ 
+    if ($l == $r) {
+        //echo $str. "\n"; 
+        $arrayStr[] = $str;
+    }   
+    else
+    { 
+        for ($i = $l; $i <= $r; $i++) 
+        { 
+            $str = swap($str, $l, $i); 
+            permute($arrayStr, $str, $l + 1, $r); 
+            $str = swap($str, $l, $i); 
+        } 
+    } 
+} 
+
+function permuteEx(&$arrayStr,$str, $l, $len) 
+{ 
+    
+        $arrayStr[] = $str;  
+
+        for ($i = 1; $i <= $len; $i++) 
+        { 
+            $str = swap($str, 0, $len);
+            $arrayStr[] = $str;
+            
+       } 
+  
+} 
+  
+/* Swap Characters at position @param 
+   a string value @param i position 1 
+   @param j position 2 @return swapped 
+   string */
+function swap($a, $i, $j) 
+{ 
+     
+    $charArray = str_split($a); 
+    $temp = $charArray[$j];
+    $newString = "";
+    for ($i=0;$i<$j;$i++){
+      $newString .= $charArray[$i];
+    } 
+
+    $newString  = $temp.$newString;
+    return $newString;
+} 
+
+function primeCheck($y){
+      $num = $y;
+      if ($num == 1)
+      {
+        return false;
+      }
+      for ($i = 2; $i <= $num/2; $i++){ 
+      if ($num % $i == 0) 
+          return false; 
+      } 
+      return true; 
+  } 
+
+  function ifSuperPrime($number){
+    $numberStr =  strval($number);
+    $sizeNumberStr = strlen($numberStr);
+    ///Preguntar si tiene mas de 1 caracter
+    if ($sizeNumberStr == 1) {
+      if (!primeCheck($number))
+        return true;
+      else  
+        return false;
+
+    }
+    else {
+    
+       $allNumberPermutation = array();
+       permuteEx( $allNumberPermutation, $numberStr , 0, $sizeNumberStr - 1);
+       
+       foreach( $allNumberPermutation as $value){
+
+         if (!primeCheck((int)$value))
+           return false;
+       }
+
+       return true;
+       // $n = strlen($str); 
+       //  
+      
+    }
+
+
+  }
+  function find_allSuperPrime($number_target){
+
+     $superPrime = 0;
+     for ($i = 2; $i <$number_target; $i++) {
+
+          ///Llevar a string
+          if (ifSuperPrime($i))
+            $superPrime++;
+
+          ///Comenzar el proceso de conversion de todas las posibles trasformaciones
+
+     }
+
+     return $superPrime;
+
+  }
+
+
+function excerciseFour(){
+      echo "<h1><strong id=\"optional\">Ejercicio 4  <b id=\"question_optional\">(opcional)</b></h1></strong>";
+      echo "<p>Implemente una función (en el lenguaje de su preferencia) que reciba como parámetro un
+      número entero <strong style=\"color:blue\"> N </strong> y devuelva la cantidad de números <strong style=\"color:red\"> super primos</strong> que hay entre cero y <strong style=\"color:blue\"> N </strong>.
+      Un número <strong style=\"color:red\"> super primo </strong> se define de la siguiente forma: 
+        <ul>
+         <li>Si a un número primo, se le quita la cifra menos significativa y se mueve a la posición
+             más significativa y el número resultante sigue siendo primo.</li>
+
+         <li>Si repites el paso anterior, tantas veces como cifras tenga el número.</li>
+          <li>Entonces el número dado es super primo (y todos los números intermedios también)</li>
+        </ul>
+      </p>";
+
+      echo "<br/>";
+
+      echo "<form method='post' action='programingexcersice.php?ejercicio=OtherEjecicio4'>
+      <p>
+        <label for='x1'>Inserte el número: </label>
+        <input type=\"text\"  id='x1' name=\"x1\">     
+      </p> 
+
+
+
+        <p><input type=\"submit\" /></p>
+      </form>";
+
+      $number_prmt = 10000;
+
+      if (isset($_POST["x1"])) {
+        $number = $_POST["x1"];
+        if (is_numeric($number) == false) {
+         echo "<h4>El parámetro no es un número</h4>";  
+         return;  
+       }
+       $number = (float)$number;
+       $number_prmt =  is_float($number)?$number:(int)$number;
+
+      }
+
+    if (is_numeric($number_prmt) == false) {
+        echo "<h4>El parámetro no es un número</h4>";  
+        return;  
+    }
+    else {
+        
+        $nex_number = find_allSuperPrime($number_prmt);
+        //$nex_number = ifSuperPrime(1193);
+        print_r(" Desde el 0 al ".$number_prmt." hay ". $nex_number . " super primos");
+    }
+
+}
+  
+// Driver Code 
+// $str = "ABC"; 
+// $n = strlen($str); 
+// permute($str, 0, $n - 1); 
+
 ?>
+
+</body>
+</html>
